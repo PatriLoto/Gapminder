@@ -37,7 +37,7 @@ americaDelSur <- filter(latam, pais %in% c("Argentina", "Bolivia" , "Brasil","Ch
 
 # GRÁFICOS
 #---------------------------------------------------------------------
-# ggplot de América
+# ggplot de América PUBLICADO en Rpubs
 #---------------------------------------------------------------------
 pamerica <-ggplot(data=america,aes(x=anio, y=poblacion, color=pais, text = paste('Año:',anio,'<br>Población:', as.double(poblacion), 'millones'))) +
   geom_point(show.legend = TRUE) +
@@ -50,6 +50,7 @@ pamerica <-ggplot(data=america,aes(x=anio, y=poblacion, color=pais, text = paste
                                   face="bold",       
                                   color="black",     #Color del título: maroon, lightblue, lightblue,darkblue, darkorange, black.
                                   lineheight=1.2), legend.position= "right", legend.justification = "center")
+      
  pamerica
 #---------------------------------------------------------------------
 # plotly de America
