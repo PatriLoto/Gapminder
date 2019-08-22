@@ -239,9 +239,4 @@ ggplot(americaDelSur, aes(pib_per_capita, esperanza_de_vida, size = poblacion, c
 
 ggsave("gapminder.png",width = 10, height = 5, dpi = "retina")
   
-   # Here comes the gganimate specific bits
-#labs(title = 'Relación entre el ingreso y la esperanza de vida', x = 'Pib per capita', y = 'Esperanza de vida') 
-#+facet_wrap(~continente) 
-  labs(title = 'Year: {frame_time}', x = 'GDP per pib_per_capita', y = 'esperanza_de_vida') +
-  transition_time(year) +
-  ease_aes('linear')
+ 
