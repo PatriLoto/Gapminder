@@ -7,7 +7,10 @@ library(gganimate)
 library(plotly)
 library(gifski)
 library(png)
-
+library(viridis)
+library(gapminder)
+library(ggthemes)
+library(wesanderson)
 #---------------------------------------------------------------------
 # Lectura de datos
 gapminder <- readr::read_csv("https://raw.githubusercontent.com/cienciadedatos/datos-de-miercoles/master/datos/2019/2019-04-24/gapminder_es.csv")
@@ -36,6 +39,17 @@ americaDelSur <- filter(latam, pais %in% c("Argentina", "Bolivia" , "Brasil","Ch
        xlab  = "Año", ylab = "Población")
 
 # GRÁFICOS
+ wes_palettes <- names(wesanderson::wes_palettes)
+ View(wes_palettes)
+ # extraigo los colores de todas las paletas de WesAnderson con sus correspondientes nombres (lo tomé del código de @committedtotape)
+ wes_paleta_func <- function(pal) {
+   col_df <- tibble(colores = wes_palette(pal), palette = pal)
+ }
+ 
+ # genero un dataframe con el nombre de cada paleta y los colores de la misma   
+ wes_colores <- map_df(wes_palettes, wes_paleta_func)
+ View(wes_colores) 
+ 
 #---------------------------------------------------------------------
 # ggplot de América PUBLICADO en Rpubs
 #---------------------------------------------------------------------
@@ -184,6 +198,7 @@ ggplotly(pdelsur3, tooltip = "text")
 #---------------------------------------------------------------------
 # ejemplo del desarrollador del paquete  gganimate thomasp85
 #---------------------------------------------------------------------
+country_colors <-viridis(7)
 ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
   geom_point(alpha = 0.7, show.legend = FALSE) +
   scale_colour_manual(values = country_colors) +
@@ -192,5 +207,41 @@ ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
   facet_wrap(~continent) +
   # Here comes the gganimate specific bits
   labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+
+ggplot(americaDelSur, aes(pib_per_capita, esperanza_de_vida, size = poblacion, colour = pais)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +  theme_economist() +
+  labs(title = 'Año: {frame_time}', x = 'pib per capita', y = 'esperanza de vida') +
+  transition_time(trunc(anio,4)) +
+  ease_aes('linear')
+
+ggplot(americaDelSur, aes(pib_per_capita, esperanza_de_vida, size = poblacion, colour = pais)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +  theme_economist() +
+  labs(title = 'Relación entre el ingreso per capita y la esperanza de vida', x = 'Pib per capita', y = 'Esperanza de vida')+
+  theme_economist()+
+  theme(legend.position = "left",                
+        legend.text = element_text(colour ="#446455" , size = 8),
+        legend.title = element_text(colour = "#446455", size = 10),   
+        legend.title.align = 1,
+        legend.background = element_rect(fill = "#D3DDDC", colour =NA), 
+        panel.background = element_rect(fill = "#D3DDDC", colour =NA),
+        plot.background = element_rect(fill = "#D3DDDC", colour = "#D3DDDC"),
+        plot.title = element_text(colour = wes_palette("GrandBudapest1")[3], size = 16, hjust = 0.5, family = "FuturaBT-ExtraBlack", face="bold"),        
+        plot.subtitle = element_text(colour = "#446455", size = 14, hjust = 0.5,family = "FuturaBT-ExtraBlack", face="italic"),
+        plot.caption = element_text(colour =  wes_palette("GrandBudapest1")[2], size = 10, hjust = 0.5,face="bold", vjust=1))
+
+ggsave("gapminder.png",width = 10, height = 5, dpi = "retina")
+  
+   # Here comes the gganimate specific bits
+#labs(title = 'Relación entre el ingreso y la esperanza de vida', x = 'Pib per capita', y = 'Esperanza de vida') 
+#+facet_wrap(~continente) 
+  labs(title = 'Year: {frame_time}', x = 'GDP per pib_per_capita', y = 'esperanza_de_vida') +
   transition_time(year) +
   ease_aes('linear')
