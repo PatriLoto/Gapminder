@@ -219,24 +219,82 @@ ggplot(americaDelSur, aes(pib_per_capita, esperanza_de_vida, size = poblacion, c
   transition_time(trunc(anio,4)) +
   ease_aes('linear')
 
-ggplot(americaDelSur, aes(pib_per_capita, esperanza_de_vida, size = poblacion, colour = pais)) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_colour_manual(values = country_colors) +
-  scale_size(range = c(2, 12)) +
-  scale_x_log10() +  theme_economist() +
-  labs(title = 'Relación entre el ingreso per capita y la esperanza de vida', x = 'Pib per capita', y = 'Esperanza de vida')+
+#----------------------------------------------------------------------------------------------------------
+#grafico TWITTER
+#----------------------------------------------------------------------------------------------------------
+
+ggplot2::ggplot(filter(gapminder, anio == 2007), aes(x = pib_per_capita, y = esperanza_de_vida)) +
+  scale_x_log10(labels = scales::dollar) +
+  geom_point(aes(size = poblacion, fill = continente), shape = 21, colour = "white", alpha = 0.6) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_size_continuous(range = c(1, 20)) +
+  labs(title = "",
+       subtitle = "Relación entre la esperanza de vida y los ingresos, 2007",
+       caption = "Fuente: Gapminder.org",
+       x = "PBI per capita ($)",
+       y = "Edad (años)") +
+  guides(size = FALSE) +
+  theme(panel.grid.major.x = element_blank(),
+        legend.position = "right", 
+        legend.title = element_blank())
+
+country_colors <-wesanderson(7)
+
+ggplot(americaDelSur, aes(pib_per_capita, esperanza_de_vida)) +
+  geom_point((size = poblacion , colour = pais), shape = 21, alpha = 0.6) +
+  #scale_colour_manual(values = country_colors) +
+  scale_size_continuous(range = c(1, 20)) +
+  scale_x_log10(labels = scales::dollar) +  
+  #scale_y_discrete()+
+  labs(title = 'Relación entre el ingreso per capita y la esperanza de vida', x = 'PBI per capita', y = 'Esperanza de vida (años)',
+       #subtitle = "Relación entre la esperanza de vida y los ingresos, 2007",
+       caption = "Fuente: https://www.rdocumentation.org/packages/datos")+
   theme_economist()+
-  theme(legend.position = "left",                
+  theme(legend.title = element_blank(),
+        legend.position = "left",                
         legend.text = element_text(colour ="#446455" , size = 8),
         legend.title = element_text(colour = "#446455", size = 10),   
         legend.title.align = 1,
         legend.background = element_rect(fill = "#D3DDDC", colour =NA), 
         panel.background = element_rect(fill = "#D3DDDC", colour =NA),
         plot.background = element_rect(fill = "#D3DDDC", colour = "#D3DDDC"),
-        plot.title = element_text(colour = wes_palette("GrandBudapest1")[3], size = 16, hjust = 0.5, family = "FuturaBT-ExtraBlack", face="bold"),        
+        plot.title = element_text(colour = wes_palette("GrandBudapest1")[4], size = 16, hjust = 0.5, family = "FuturaBT-ExtraBlack", face="bold"),        
         plot.subtitle = element_text(colour = "#446455", size = 14, hjust = 0.5,family = "FuturaBT-ExtraBlack", face="italic"),
-        plot.caption = element_text(colour =  wes_palette("GrandBudapest1")[2], size = 10, hjust = 0.5,face="bold", vjust=1))
+        plot.caption = element_text(colour = "black" , size = 8, hjust = 0.9,face="bold", vjust=1))
 
-ggsave("gapminder.png",width = 10, height = 5, dpi = "retina")
+
+
+ggplot(americaDelSur, aes(pib_per_capita, esperanza_de_vida, size = poblacion, colour = pais)) +
+  geom_point(alpha = 0.6) +
+ #scale_colour_manual(values = country_colors) +
+  scale_size_continuous(range = c(1, 20)) +
+  scale_x_log10(labels = scales::dollar) +  
+  #scale_y_discrete()+
+  labs(size= "", title = 'Relación entre el ingreso per capita y la esperanza de vida', x = 'PBI per capita', y = 'Esperanza de vida (años)',
+  #subtitle = "Relación entre la esperanza de vida y los ingresos, 2007",
+  caption = "Fuente: https://www.rdocumentation.org/packages/datos")+
+  theme_economist()+
+  theme(legend.title = element_blank(),
+    legend.position = "left",                
+        legend.text = element_text(colour ="#446455" , size = 8),
+        #legend.title = element_text(colour = "#446455", size = 10),   
+        #legend.title.align = 1,
+        legend.background = element_rect(fill = "#D3DDDC", colour =NA), 
+        panel.background = element_rect(fill = "#D3DDDC", colour =NA),
+        plot.background = element_rect(fill = "#D3DDDC", colour = "#D3DDDC"),
+        plot.title = element_text(colour = wes_palette("GrandBudapest1")[4], size = 16, hjust = 0.5, family = "FuturaBT-ExtraBlack", face="bold"),        
+        plot.subtitle = element_text(colour = "#446455", size = 14, hjust = 0.5,family = "FuturaBT-ExtraBlack", face="italic"),
+        plot.caption = element_text(colour = "black" , size = 8, hjust = 0.9,face="bold", vjust=1))
+
+ggsave("gapminder3.png",width = 10, height = 5, dpi = "retina")
+  
+
+
+# Here comes the gganimate specific bits
+#labs(title = 'Relación entre el ingreso y la esperanza de vida', x = 'Pib per capita', y = 'Esperanza de vida') 
+#+facet_wrap(~continente) 
+  labs(title = 'Year: {frame_time}', x = 'GDP per pib_per_capita', y = 'esperanza_de_vida') +
+  transition_time(year) +
+  ease_aes('linear')
   
  
