@@ -290,7 +290,7 @@ ggsave("gapminder3.png",width = 10, height = 5, dpi = "retina")
   
 
 
-# Here comes the gganimate specific bits
+# Aquí viene la animación
 #labs(title = 'Relación entre el ingreso y la esperanza de vida', x = 'Pib per capita', y = 'Esperanza de vida') 
 #+facet_wrap(~continente) 
   labs(title = 'Year: {frame_time}', x = 'GDP per pib_per_capita', y = 'esperanza_de_vida') +
